@@ -38,7 +38,7 @@ export default {
                     /*router.push({path:"base"});*/
                     axios.defaults.headers.common['Authorization'] = 'bearer '+ localStorage.getItem("currentUser_token");
                     /*context.commit('setLoginErrorCode',200,{root: true});*/
-                    iView.Message.error("success");
+                    /*iView.Message.error("success");*/
                     router.push({ path: '/index' });
                 }else{
                     /*context.commit('setLoginErrorCode',response.data.resultCode,{root: true});*/
@@ -50,9 +50,9 @@ export default {
                 /*context.commit('users/setLoginErrorCode',500,{root: true});*/
             });
         },
-        loginOUt(context,{router}){
-            router.push({ path: '/' }) ;
-            location.reload();
+        loginOut(context,{router}){
+            router.push({ path: '/login' }) ;
+            /*location.reload();*/
             context.commit('clearUser');
         }
     }

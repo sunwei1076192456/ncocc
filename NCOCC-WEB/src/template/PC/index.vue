@@ -116,11 +116,11 @@
                                     <Icon type="ios-person"></Icon>
                                     {{user.name}}
                                 </MenuItem> -->
-                                <MenuItem name="uer">
+                                <MenuItem name="2">
                                     <Icon type="ios-person"></Icon>
                                     {{userName}}
                                 </MenuItem>
-                                <MenuItem name="logout">
+                                <MenuItem name="1">
                                     <Icon type="md-log-out" />
                                     退出
                                 </MenuItem>
@@ -197,7 +197,7 @@
         methods:{
             menuSelect(e){
                 if(e==1){
-                    this.$store.dispatch('users/loginOUt',{"router":this.$router});
+                    this.$store.dispatch('users/loginOut',{"router":this.$router});
                 }  
             },
             /*菜单选择事件*/
@@ -206,12 +206,8 @@
                 this.$router.push(filterMenus[0].url);
                 this.breadcrumbData.splice(0,1,filterMenus[0]);
             },
-            /*下拉菜单选择事件*/
-            dropdownSelect(e){
-                this.$store.dispatch('users/loginOUt',{"router":this.$router});
-            },
             backHome(){
-                this.$router.push("/page/home");
+                this.$router.push("/index");
             }
         }
     }
