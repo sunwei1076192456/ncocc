@@ -205,6 +205,7 @@
                 var filterMenus = this.menuSub.filter(function(menu){return (menu.url!=null && menu.url!='' && menu.id==e)});
                 this.$router.push(filterMenus[0].url);
                 this.breadcrumbData.splice(0,1,filterMenus[0]);
+                console.log(breadcrumbData);
             },
             backHome(){
                 this.$router.push("/index");
