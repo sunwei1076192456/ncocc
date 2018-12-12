@@ -13,16 +13,20 @@ if(localStorage.getItem("currentUser_token") == null || localStorage.getItem("cu
 axios.defaults.baseURL = '/';
 
 // http request 拦截器
-/*axios.interceptors.request.use(
+axios.interceptors.request.use(
     config => {
-        if (store.state.token) {
+        if (localStorage.getItem("currentUser_token") == null || localStorage.getItem("currentUser_token") == '') {
             config.headers.Authorization = `token ${store.state.token}`;
+            router.replace({
+                path: '/login',
+                query: {redirect: router.currentRoute.fullPath}
+            });
         }
         return config;
     },
     err => {
         return Promise.reject(err);
-    });*/
+    });
 
 // http response 拦截器
 axios.interceptors.response.use(

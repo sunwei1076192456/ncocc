@@ -48,6 +48,14 @@ const routers = [
                 meta: {
                     title:"欢迎"
                 }
+	    	},
+	    	{
+	    		path: '/userManager',
+                name: 'userManager',
+                component: (resolve) => require(['./template/PC/userManager.vue'], resolve),
+                meta: {
+                    title:"用户管理"
+                }
 	    	}
 	    ]
 	},

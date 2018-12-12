@@ -5,7 +5,17 @@
                 <Col span="8">登录名：
                 	<Input v-model="loginName" placeholder="请输入..." style="width:200px"></Input>
                 </Col>
-                <Col span="8"><Button type="primary" shape="circle" icon="ios-search" @click="search()">搜索</Button></Col>
+                <Col span="6">用户角色：
+                    <Select v-model="userRole" filterable clearable style="width: 100px">
+                        <Option v-for="item in allRoleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    </Select>
+                </Col>
+                <Col span="6">用户状态：
+                    <Select v-model="state" filterable clearable style="width: 100px">
+                        <Option v-for="item in stateList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    </Select>
+                </Col>
+                <Col span="4"><Button type="primary" shape="circle" icon="ios-search" @click="search()">搜索</Button></Col>
             </Row>
         </div>            
         <div>
@@ -63,9 +73,13 @@
         data () {
             return {
                 /*当前用户登录名*/
-                userName = window.localStorage.getItem("currentUser_name");
+                /*userName = window.localStorage.getItem("currentUser_name");*/
                 /*用于查找的登录名*/
-                loginName:null,
+                loginName:'',
+                 /*用于查找的角色*/
+                userRole:'',
+                /*用于查找的用户状态*/
+                state:'',
             	/*选择的数量*/
                 count:null,
             	/*选中的组数据*/
@@ -155,23 +169,12 @@
                         key: 'loginName'
                     },
                     {
-                        title: '邮箱',
-                        key: 'email'
+                        title: '姓名',
+                        key: 'name'
                     },
                     {
-                        title: 'Github',
-                        key: 'url',
-                        width:300,
-                        render: (h, params) => {
-                            return h('a',
-                                {
-                                    attrs:{
-                                        href:params.row.url,
-                                        target:'_blank'
-                                    }
-                                }
-                                , params.row.url);
-                        }
+                        title: '电话',
+                        key: 'phone'
                     },
                     {
                         title: '用户类型',
@@ -180,19 +183,28 @@
                         render: (h, params) => {
                             if(params.row.usertype == 0){
                                return h('div', [
-                                    h('strong', null,'普通用户')
+                                    h('strong', null,'管理员')
                                 ]); 
                            }else if(params.row.usertype == 1){
                                 return h('div', [
-                                    h('strong', null,'管理员')
+                                    h('strong', null,'财务')
+                                ]); 
+                           }else if(params.row.usertype == 2){
+                                return h('div', [
+                                    h('strong', null,'调度员')
+                                ]); 
+                           }else if(params.row.usertype == 3){
+                                return h('div', [
+                                    h('strong', null,'操作员')
+                                ]); 
+                           }
+                           else{
+                                return h('div', [
+                                    h('strong', null,'无')
                                 ]); 
                            }
                             
                         }
-                    },
-                    {
-                        title: '注册时间',
-                        key: 'createTime'
                     },
                     {
                         title: '操作',
@@ -230,13 +242,18 @@
                     },
                     {
                         title: '描述',
-                        key: 'describe'
+                        key: 'describer'
                     }
                 ],
                 /*表数据*/
                 data2:[],
-                /*data2的临时存储*/
-                data2Temp:[],
+                /*所有角色临时存储*/
+                allRoleList:[],
+                /*初始用户状态*/
+                stateList:[
+                    {"label":'正常',"value":0},
+                    {"label":'注销',"value":1},
+                ],
                 /*用户与角色关系列表*/
                 relationList:null
             }
@@ -245,13 +262,15 @@
         	/*页面初始化调用方法*/
             this.getTable({
                 "pageInfo":this.pageInfo,
-                "loginName":this.loginName
+                "loginName":this.loginName,
+                "role":this.userRole,
+                "state":this.state
             });
             this.axios({
               method: 'get',
-              url: '/roles/all'
+              url: '/api/roleManger/getAllRoles.do'
             }).then(function (response) {
-                this.data2Temp = response.data;
+                this.allRoleList = response.data.extend.role;
             }.bind(this)).catch(function (error) {
               alert(error);
             });
@@ -314,25 +333,26 @@
                 var time = new Date(parseInt(e));
                 return time.getFullYear()+"-"+(time.getMonth()+1)+"-"+time.getDate()+" "+time.getHours()+":"+time.getMinutes(); 
             },
-            listDateSet(e){
+            /*listDateSet(e){
                 for (var i = e.length - 1; i >= 0; i--) {
                     e[i].createTime = this.dateGet(e[i].createTime);
                 }
-            },
+            },*/
             /*得到表数据*/
             getTable(e) {
                 this.axios({
                   method: 'get',
-                  url: '/users',
+                  url: '/api/userManger/queryAllUserByAuth.do',
                   params: {
                     'page':e.pageInfo.page,
                     'pageSize':e.pageInfo.pageSize,
-                    'loginName':e.loginName
+                    'loginName':e.loginName,
+                    "role":e.role,
+                    "state":e.state
                   }
                 }).then(function (response) {
-                    this.data1=response.data.data;
-                    this.listDateSet(this.data1);
-                    this.total=response.data.totalCount;
+                    this.data1=response.data.extend.user;
+                    this.total=response.data.extend.totalCount;
                 }.bind(this)).catch(function (error) {
                   alert(error);
                 });
@@ -514,26 +534,29 @@
                 this.data2 = [];
                 this.axios({
                   method: 'get',
-                  url: '/relations/'+e.id
+                  url: '/api/roleManger/getAllRolesByLoginName.do',
+                  params: {
+                    "loginName":e.loginName
+                  }
                 }).then(function (response) {
                     var roleList = [];
-                    for(var i in response.data){
+                    for(var i in response.data.extend.userRole){
                         roleList.push(response.data[i].roleId);
                     }
-                    for(var i in this.data2Temp){
-                        if(roleList.indexOf(this.data2Temp[i].id) == -1){
+                    for(var i in this.allRoleList){
+                        if(roleList.indexOf(this.allRoleList[i].id) == -1){
                             this.data2.push({
-                                "id": this.data2Temp[i].id,
-                                "name": this.data2Temp[i].name,
-                                "describe": this.data2Temp[i].describe,
+                                "id": this.allRoleList[i].id,
+                                "name": this.allRoleList[i].name,
+                                "describer": this.allRoleList[i].describer,
                                 "userId": e.id,
                                 "_checked": false
                             });
                         }else {
                             this.data2.push({
-                                "id": this.data2Temp[i].id,
-                                "name": this.data2Temp[i].name,
-                                "describe": this.data2Temp[i].describe,
+                                "id": this.allRoleList[i].id,
+                                "name": this.allRoleList[i].name,
+                                "describer": this.allRoleList[i].describer,
                                 "userId": e.id,
                                 "_checked": true
                             });
