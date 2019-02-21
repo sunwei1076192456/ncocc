@@ -21,9 +21,9 @@
         <div>
             <ul>
                 <li>
-                    <Button type="primary" icon="plus-round" @click="openNewModal()">新建</Button>
-                    <Button type="success" icon="wrench" @click="openModifyModal()">修改</Button>
-                    <Button type="error" icon="trash-a" @click="del()">删除</Button>
+                    <Button type="primary" icon="md-add" @click="openNewModal()">新建</Button>
+                    <Button type="success" icon="md-build" @click="openModifyModal()">修改</Button>
+                    <Button type="error" icon="md-trash" @click="del()">删除</Button>
                 </li>
                 <li>
                     <div style="padding: 10px 0;">
@@ -37,7 +37,48 @@
                 </li>
             </ul>
         </div>
-        <!--修改modal-->  
+        <!--新建modal-->  
+        <Modal :mask-closable="false" :visible.sync="newModal" :loading = "loading" v-model="newModal" width="600" title="添加" @on-ok="newOk('userNew')" @on-cancel="cancel()">
+             <Form ref="userNew" :model="userNew" :rules="ruleNew" :label-width="80" >
+                <Row>
+                    <Col span="12">
+                        <FormItem label="登录名:" prop="loginName">
+                            <Input v-model="userNew.loginName" style="width: 204px" type="text" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="姓名:" prop="name">
+                            <Input v-model="userNew.name" style="width: 204px" type="text" />
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                        <FormItem label="密码:" prop="password">
+                            <Input v-model="userNew.password" type="password" style="width:200px" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="确认密码:" prop="passwordAgain">
+                            <Input v-model="userNew.passwordAgain" type="password" style="width:200px" />
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                        <FormItem label="邮箱:" prop="email">
+                            <Input v-model="userNew.email" type="text" style="width:200px" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="手机:" prop="phone">
+                            <Input v-model="userNew.phone" type="text" style="width:200px" />
+                        </FormItem>
+                    </Col>
+                </Row>
+            </Form>
+        </Modal>
+        <!--修改modal 
         <Modal :mask-closable="false" :visible.sync="modifyModal" v-model="modifyModal" width="600" title="修改" @on-ok="modifyOk()" @on-cancel="cancel()">
              <Form :label-width="80" >
                 <Row>
@@ -54,8 +95,49 @@
                                 <Option  :value="0">普通用户</Option>
                                 <Option  :value="1">管理员</Option>
                             </Select>
-                            <!-- <Input v-model="userModify.email" style="width: 204px"/> -->
+                             <Input v-model="userModify.email" style="width: 204px"/>
                         </Form-item>
+                    </Col>
+                </Row>
+            </Form>
+        </Modal>
+        -->
+        <Modal :mask-closable="false" :visible.sync="modifyModal" :loading = "loading" v-model="modifyModal" width="600" title="修改" @on-ok="modifyOk()" @on-cancel="cancel()">
+             <Form ref="userModify" :model="userModify" :rules="ruleModify" :label-width="80" >
+                <Row>
+                    <Col span="12">
+                        <FormItem label="登录名:" prop="loginName">
+                            <Input v-model="userModify.loginName" style="width: 204px" type="text" disabled="disabled" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="姓名:" prop="name">
+                            <Input v-model="userModify.name" style="width: 204px" type="text" />
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                        <FormItem label="密码:" prop="password">
+                            <Input v-model="userModify.password" type="password" style="width:200px" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="确认密码:" prop="passwordAgain">
+                            <Input v-model="userModify.passwordAgain" type="password" style="width:200px" />
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                        <FormItem label="邮箱:" prop="email">
+                            <Input v-model="userModify.email" type="text" style="width:200px" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="手机:" prop="phone">
+                            <Input v-model="userModify.phone" type="text" style="width:200px" />
+                        </FormItem>
                     </Col>
                 </Row>
             </Form>
@@ -69,17 +151,18 @@
     </div>
 </template>
 <script>
+    import 'iview/dist/styles/iview.css';
 	export default {
         data () {
             return {
                 /*当前用户登录名*/
                 /*userName = window.localStorage.getItem("currentUser_name");*/
                 /*用于查找的登录名*/
-                loginName:'',
+                loginName:null,
                  /*用于查找的角色*/
-                userRole:'',
+                userRole:null,
                 /*用于查找的用户状态*/
-                state:'',
+                state:null,
             	/*选择的数量*/
                 count:null,
             	/*选中的组数据*/
@@ -96,7 +179,7 @@
                 loading: true,
                 /*pageInfo实体*/
                 pageInfo:{
-                	page:0,
+                	page:1,
                 	pageSize:10
                 },
                 /*user实体*/
@@ -105,40 +188,46 @@
                     name:null,
                     loginName:null,
                     password:null,
-                    passwordAgain:null,
-                    email:null
+                    /*passwordAgain:null,*/
+                    email:null,
+                    phone:null
                 },
-                /*用于添加的user实体*/
+                /*用于添加的user实体,和后台代码的user保持一致*/
                 userNew:{
                 	id:null,
 					name:null,
 					loginName:null,
 					password:null,
                     passwordAgain:null,
-					email:null
+					email:null,
+                    phone:null
                 },
                 /*用于修改的user实体*/
                 userModify:{
-					loginName:null,
-					usertype:null
+					id:null,
+                    name:null,
+                    loginName:null,
+                    password:null,
+                    passwordAgain:null,
+                    email:null,
+                    phone:null
                 },
                 /*新建验证*/
-                ruleNew:{
-                    name: [
-                        { type:'string',required: true, message: '输入用户名', trigger: 'blur' }
-                    ],
+                ruleNew: {
                     loginName: [
-                        { type:'string',required: true, message: '输入登录名', trigger: 'blur' }
+                        { required: true, message: '输入姓名', trigger: 'blur' }
+                    ],
+                    name: [
+                        { required: true, message: '输入登录名', trigger: 'blur' }
                     ],
                     password: [
-                        { type:'string',required: true, message: '输入密码', trigger: 'blur' }
+                        { required: true, message: '输入密码', trigger: 'blur' }
                     ],
                     passwordAgain: [
-                        { type:'string',required: true, message: '输入再次密码', trigger: 'blur' }
+                        { required: true, message: '输入再次密码', trigger: 'blur' }
                     ],
-                    email: [
-                        { required: true, message: '输入邮箱', trigger: 'blur' },
-                        { type:'email', message: '输入正确的邮箱格式', trigger: 'blur' }
+                    phone: [
+                        { required: true, message: '输入手机号', trigger: 'blur' }
                     ]
                 },
                 /*修改验证*/
@@ -146,15 +235,17 @@
                     name: [
                         { type:'string',required: true, message: '输入用户名', trigger: 'blur' }
                     ],
-                    loginName: [
+                    /*loginName: [
                         { type:'string',required: true, message: '输入登录名', trigger: 'blur' }
-                    ],
+                    ],*/
                     password: [
                         { type:'string',required: true, message: '输入密码', trigger: 'blur' }
                     ],
-                    email: [
-                        { required: true, message: '输入邮箱', trigger: 'blur' },
-                        { type:'email', message: '输入正确的邮箱格式', trigger: 'blur' }
+                    passwordAgain: [
+                        { required: true, message: '再次输入密码', trigger: 'blur' }
+                    ],
+                    phone: [
+                        { required: true, message: '输入手机号', trigger: 'blur' }
                     ]
                 },
             	/*表显示字段*/
@@ -269,16 +360,16 @@
             this.axios({
               method: 'get',
               url: '/api/roleManger/getAllRoles.do'
-            }).then(function (response) {
+            }).then((response) => {
                 this.allRoleList = response.data.extend.role;
-            }.bind(this)).catch(function (error) {
-              alert(error);
+            }).catch((error) => {
+              this.$Message.error(error);
             });
         },
         methods:{
         	/*pageInfo实体初始化*/
         	initPageInfo(){
-        		this.pageInfo.page = 0;
+        		this.pageInfo.page = 1;
         		this.pageInfo.pageSize = 10;
         	},
             /*user实体初始化*/
@@ -288,6 +379,7 @@
                 this.user.loginName = null;
                 this.user.password = null;
                 this.user.email = null;
+                this.user.phone = null;
             },
             /*userNew实体初始化*/
             initUserNew(){
@@ -297,6 +389,7 @@
                 this.userNew.password = null;
                 this.userNew.passwordAgain = null;
                 this.userNew.email = null;
+                this.userNew.phone = null;
             },
             /*userModify实体初始化*/
             initUserModify(){
@@ -304,7 +397,9 @@
                 this.userModify.name = null;
                 this.userModify.loginName = null;
                 this.userModify.password = null;
+                this.userModify.passwordAgain = null;
                 this.userModify.email = null;
+                this.userModify.phone = null;
             },
             /*userNew设置*/
             userSet(e){
@@ -313,6 +408,7 @@
                 this.user.loginName = e.loginName;
                 this.user.password = e.password;
                 this.user.email = e.email;
+                this.user.phone = e.phone;
             },
             /*userNew设置*/
             userNewSet(e){
@@ -322,12 +418,17 @@
                 this.userNew.password = e.password;
                 this.userNew.passwordAgain = e.password;
                 this.userNew.email = e.email;
+                this.userNew.phone = e.phone;
             },
             /*userModify设置*/
             userModifySet(e){
                 this.userModify.id = e.id;
+                this.userModify.name = e.name;
                 this.userModify.loginName = e.loginName;
-                this.userModify.usertype = e.usertype;
+                this.userModify.password = e.password;
+                this.userModify.passwordAgain = e.password;
+                this.userModify.email = e.email;
+                this.userModify.phone = e.phone;
             },
             dateGet(e){
                 var time = new Date(parseInt(e));
@@ -350,11 +451,11 @@
                     "role":e.role,
                     "state":e.state
                   }
-                }).then(function (response) {
+                }).then((response) => {
                     this.data1=response.data.extend.user;
                     this.total=response.data.extend.totalCount;
-                }.bind(this)).catch(function (error) {
-                  alert(error);
+                }).catch((error) => {
+                  this.$Message.error(error);
                 });
             },
             /*搜索按钮点击事件*/
@@ -362,12 +463,14 @@
                 this.initPageInfo();
                 this.getTable({
                     "pageInfo":this.pageInfo,
-                    "loginName":this.loginName
+                    "loginName":this.loginName,
+                    "role":this.userRole,
+                    "state":this.state
                 });   
             },
             /*分页点击事件*/
             pageSearch(e){
-                this.pageInfo.page = e-1;
+                this.pageInfo.page = e;
                 this.getTable({  
                     "pageInfo":this.pageInfo,
                     "loginName":this.loginName
@@ -390,15 +493,20 @@
                             this.userSet(this.userNew);
                             this.axios({
                                 method: 'post',
-                                url: '/users/user',
+                                url: '/api/userManger/saveUser.do',
                                 data: this.user
                             }).then(function (response) {
                                 this.initUserNew();
-                                this.getTable({
+                                if(response.data.resultCode == 200){
+                                    this.getTable({
                                     "pageInfo":this.pageInfo,
                                     "loginName":this.loginName
-                                });
-                                this.$Message.info('新建成功');
+                                    });
+                                     this.$Message.info('添加成功');
+                                     //iView.Message.info('添加成功');
+                                }else {
+                                    this.$Message.error(response.data.resultMsg);
+                                }
                             }.bind(this)).catch(function (error) {
                                 alert(error);
                             });  
@@ -432,27 +540,38 @@
             },
             /*修改modal的modifyOk点击事件*/
              modifyOk () { 
-                // this.initUser();
-                // this.userSet(this.userModify);
-                this.axios({
-                  method: 'put',
-                  url: '/users/user',
-                  data: {
-                    "loginName": this.userModify.loginName,
-                    "usertype": this.userModify.usertype,
-                    "id": this.userModify.id
-                  }
-                }).then(function (response) {
-                    this.initUserNew();
-                    this.getTable({
-                        "pageInfo":this.pageInfo,
-                        "loginName":this.loginName
-                    });
-                    this.$Message.info('修改成功');
-                }.bind(this)).catch(function (error) {
-                  alert(error);
-                });  
-                this.modifyModal = false;
+                if(this.userModify.password == this.userModify.passwordAgain){
+                    this.initUser();
+                    this.userSet(this.userModify);
+                    this.axios({
+                      method: 'post',
+                      url: '/api/userManger/modifyUser.do',
+                      data: this.user
+                    }).then(function (response) {
+                        if(response.data.resultCode == 200){
+                            this.getTable({
+                            "pageInfo":this.pageInfo,
+                            "loginName":this.loginName
+                            });
+                             this.$Message.info('更新成功');
+                             //iView.Message.info('添加成功');
+                        }else {
+                            this.$Message.error(response.data.resultMsg);
+                        }
+                        this.initUserModify();
+                        
+                    }.bind(this)).catch(function (error) {
+                      this.$Message.info('修改失败');
+                    });  
+                    this.modifyModal = false;
+                }else{
+                    this.$Message.error('两次输入的密码不相同！');
+                            this.loading = false;
+                            this.$nextTick(() => {
+                                this.loading = true;
+                            });
+                }
+                
                 // this.$refs[userModify].validate((valid) => {
                 //     if (valid) {
                 //         this.initUser();
@@ -484,8 +603,8 @@
                 // })
             },
             /*modal的cancel点击事件*/
-            cancel () {
-                this.$Message.info('点击了取消');
+            cancel() {
+                /*this.$Message.info('点击了取消');*/
             },
             /*table选择后触发事件*/
             change(e){
@@ -506,20 +625,27 @@
             del(){
                 if(this.groupId!=null && this.groupId!=""){
                     this.axios({
-                      method: 'delete',
-                      url: '/users',
+                      method: 'post',
+                      url: '/api/userManger/deleteUser.do',
                       data: this.groupId
                     }).then(function (response) {
-                        this.getTable({
-                            "pageInfo":this.pageInfo,
-                            "loginName":this.loginName
-                        });
                         this.groupId=null;
                         this.count=0;
-                        this.$Message.info('删除成功');
+                        if(response.data.resultCode == 200){
+                            this.getTable({
+                            "pageInfo":this.pageInfo,
+                            "loginName":this.loginName
+                            });
+                            this.$Message.info('删除成功');
+                        }else{
+                            //iView.Message.error('添加失败');
+                            this.$Message.error(response.data.resultMsg);
+                        }
                     }.bind(this)).catch(function (error) {
-                        alert(error);
+                        this.$Message.error('删除失败');
                     });
+                }else{
+                    this.$Message.warning('请至少选择一项删除');
                 }
             },
             /*表格中双击事件*/
@@ -541,7 +667,7 @@
                 }).then(function (response) {
                     var roleList = [];
                     for(var i in response.data.extend.userRole){
-                        roleList.push(response.data[i].roleId);
+                        roleList.push(response.data.extend.userRole[i].roleId);
                     }
                     for(var i in this.allRoleList){
                         if(roleList.indexOf(this.allRoleList[i].id) == -1){
@@ -549,7 +675,7 @@
                                 "id": this.allRoleList[i].id,
                                 "name": this.allRoleList[i].name,
                                 "describer": this.allRoleList[i].describer,
-                                "userId": e.id,
+                                "userName": e.loginName,
                                 "_checked": false
                             });
                         }else {
@@ -557,7 +683,7 @@
                                 "id": this.allRoleList[i].id,
                                 "name": this.allRoleList[i].name,
                                 "describer": this.allRoleList[i].describer,
-                                "userId": e.id,
+                                "userName": e.loginName,
                                 "_checked": true
                             });
                         }
@@ -571,12 +697,21 @@
                 if(this.relationList!=null){
                     this.axios({
                       method: 'post',
-                      url: '/relations',
+                      url: '/api/roleManger/rolesConfigure.do',
                       data: this.relationList
                     }).then(function (response) {
-                        this.$Message.info('配置成功'); 
+                        if(response.data.resultCode == 200){
+                            this.getTable({
+                            "pageInfo":this.pageInfo,
+                            "loginName":this.loginName
+                            });
+                            this.$Message.info('配置成功');     
+                        }else{
+                            this.$Message.error(response.data.resultMsg);
+                        }
+                        
                     }.bind(this)).catch(function (error) {
-                      alert(error);
+                      this.$Message.error(error);
                     });
                     this.relationList = null;
                 }
@@ -586,12 +721,12 @@
                 this.relationList = [];
                 if(e.length == 0){
                     this.relationList.push({
-                        "userId": this.data2[0].userId
+                        "userName": this.data2[0].userName
                     }); 
                 }
                 for (var i in e) {
                     this.relationList.push({
-                        "userId": e[i].userId,
+                        "userName": e[i].userName,
                         "roleId": e[i].id
                     });  
                 }

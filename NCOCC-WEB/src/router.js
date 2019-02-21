@@ -56,6 +56,22 @@ const routers = [
                 meta: {
                     title:"用户管理"
                 }
+	    	},
+	    	{
+	    		path: '/menuManager',
+                name: 'menuManager',
+                component: (resolve) => require(['./template/PC/menuManager.vue'], resolve),
+                meta: {
+                    title:"菜单管理"
+                }
+	    	},
+	    	{
+	    		path: '/roleManager',
+                name: 'roleManager',
+                component: (resolve) => require(['./template/PC/roleManager.vue'], resolve),
+                meta: {
+                    title:"角色管理"
+                }
 	    	}
 	    ]
 	},

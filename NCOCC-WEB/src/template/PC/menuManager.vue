@@ -3,9 +3,7 @@
         <div>
             <Row style="margin-bottom: 25px;">
                 <Col span="8">菜单名称：
-                    <Select v-model="menuId" filterable clearable style="width: 200px">
-                        <Option v-for="item in menuList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                    </Select>
+                    <Input v-model="name" placeholder="请输入..." style="width:180px"></Input>
                 </Col>
                 <Col span="8"><Button type="primary" shape="circle" icon="ios-search" @click="search()">搜索</Button></Col>
             </Row>
@@ -46,8 +44,8 @@
                 </Row>
                 <Row>
                     <Col span="12">
-                        <Form-item label="父类ID:" prop="parentId">
-                            <Input v-model="menuNew.parentId" style="width: 204px"/>
+                        <Form-item label="父类ID:" prop="parent_id">
+                            <Input v-model="menuNew.parent_id" style="width: 204px"/>
                         </Form-item>
                     </Col>
                     <Col span="12">
@@ -85,8 +83,8 @@
                 </Row>
                 <Row>
                     <Col span="12">
-                        <Form-item label="父类ID:" prop="parentId">
-                            <Input v-model="menuModify.parentId" style="width: 204px"/>
+                        <Form-item label="父类ID:" prop="parent_id">
+                            <Input v-model="menuModify.parent_id" style="width: 204px"/>
                         </Form-item>
                     </Col>
                     <Col span="12">
@@ -115,6 +113,7 @@
             return {
                 /*用于查找的菜单id*/
                 menuId:null,
+                name:null,
             	/*选择的数量*/
                 count:null,
             	/*选中的组数据*/
@@ -129,7 +128,7 @@
                 loading: true,
                 /*pageInfo实体*/
                 pageInfo:{
-                	page:0,
+                	page:1,
                 	pageSize:10
                 },
                 /*menu实体*/
@@ -137,7 +136,7 @@
                     id:null,
                     name:null,
                     url:null,
-                    parentId:null,
+                    parent_id:null,
                     sort:null,
                     remark:null,
                     icon:null
@@ -147,7 +146,7 @@
                 	id:null,
                     name:null,
                     url:null,
-                    parentId:null,
+                    parent_id:null,
                     sort:null,
                     remark:null,
                     icon:null
@@ -157,7 +156,7 @@
                 	id:null,
                     name:null,
                     url:null,
-                    parentId:null,
+                    parent_id:null,
                     sort:null,
                     remark:null,
                     icon:null
@@ -167,10 +166,10 @@
                     name: [
                         { type:'string',required: true, message: '输入菜单名', trigger: 'blur' }
                     ],
-                    url: [
+                    /*url: [
                         { type:'string',required: true, message: '输入路径', trigger: 'blur' }
-                    ],
-                    parentId: [
+                    ],*/
+                    parent_id: [
                         { required: true, message: '输入父类ID', trigger: 'blur' },
                         {validator(rule, value, callback) {
                             if (!Number.isInteger(+value)) {
@@ -191,20 +190,20 @@
                             }
                           
                         }, trigger: 'blur'}
-                    ],
-                    icon: [
-                        { type:'string',required: true, message: '输入图标', trigger: 'blur' }
                     ]
+                    /*icon: [
+                        { type:'string',required: true, message: '输入图标', trigger: 'blur' }
+                    ]*/
                 },
                 /*修改验证*/
                 ruleModify:{
                     name: [
                         { type:'string',required: true, message: '输入菜单名', trigger: 'blur' }
                     ],
-                    url: [
+                    /*url: [
                         { type:'string',required: true, message: '输入路径', trigger: 'blur' }
-                    ],
-                    parentId: [
+                    ],*/
+                    parent_id: [
                         { required: true, message: '输入父类ID', trigger: 'blur' },
                         {validator(rule, value, callback) {
                             if (!Number.isInteger(+value)) {
@@ -225,10 +224,10 @@
                             }
                           
                         }, trigger: 'blur'}
-                    ],
-                    icon: [
-                        { type:'string',required: true, message: '输入图标', trigger: 'blur' }
                     ]
+                    /*icon: [
+                        { type:'string',required: true, message: '输入图标', trigger: 'blur' }
+                    ]*/
                 },
                 /*菜单列表*/
                 menuList:[],
@@ -248,12 +247,12 @@
                         key: 'name'
                     },
                     {
-                        title: '地址',
+                        title: '路径',
                         key: 'url'
                     },
                     {
                         title: '上级菜单id',
-                        key: 'parentId'
+                        key: 'parent_id'
                     },
                     {
                         title: '排序',
@@ -272,13 +271,13 @@
         	/*页面初始化调用方法*/
             this.getTable({
                 "pageInfo":this.pageInfo,
-                'menuId':this.menuId
+                'name':this.name
             });
-            this.axios({
+            /*this.axios({
               method: 'get',
-              url: '/menus/parentId',
+              url: '/menus/parent_id',
               params: {
-                'parentId': 0 
+                'parent_id': 0 
               }
             }).then(function (response) {
                 var listTemp = response.data;
@@ -290,12 +289,12 @@
                 }
             }.bind(this)).catch(function (error) {
               alert(error);
-            });
+            });*/
         },
         methods:{
         	/*pageInfo实体初始化*/
         	initPageInfo(){
-        		this.pageInfo.page = 0;
+        		this.pageInfo.page = 1;
         		this.pageInfo.pageSize = 10;
         	},
             /*menu实体初始化*/
@@ -303,7 +302,7 @@
                 this.menu.id = null;
                 this.menu.name = null;
                 this.menu.url = null;
-                this.menu.parentId = null;
+                this.menu.parent_id = null;
                 this.menu.sort = null;
                 this.menu.remark = null;
                 this.menu.icon = null;
@@ -313,7 +312,7 @@
                 this.menuNew.id = null;
                 this.menuNew.name = null;
                 this.menuNew.url = null;
-                this.menuNew.parentId = null;
+                this.menuNew.parent_id = null;
                 this.menuNew.sort = null;
                 this.menuNew.remark = null;
                 this.menuNew.icon = null;
@@ -323,7 +322,7 @@
                 this.menuModify.id = null;
                 this.menuModify.name = null;
                 this.menuModify.url = null;
-                this.menuModify.parentId = null;
+                this.menuModify.parent_id = null;
                 this.menuModify.sort = null;
                 this.menuModify.remark = null;
                 this.menuModify.icon = null;
@@ -333,7 +332,7 @@
                 this.menu.id = e.id;
                 this.menu.name = e.name;
                 this.menu.url = e.url;
-                this.menu.parentId = e.parentId;
+                this.menu.parent_id = e.parent_id;
                 this.menu.sort = e.sort;
                 this.menu.remark = e.remark;
                 this.menu.icon = e.icon;
@@ -343,7 +342,7 @@
                 this.menuNew.id = e.id;
                 this.menuNew.name = e.name;
                 this.menuNew.url = e.url;
-                this.menuNew.parentId = e.parentId;
+                this.menuNew.parent_id = e.parent_id;
                 this.menuNew.sort = e.sort;
                 this.menuNew.remark = e.remark;
                 this.menuNew.icon = e.icon;
@@ -353,7 +352,7 @@
                 this.menuModify.id = e.id;
                 this.menuModify.name = e.name;
                 this.menuModify.url = e.url;
-                this.menuModify.parentId = e.parentId+'';
+                this.menuModify.parent_id = e.parent_id+'';
                 this.menuModify.sort = e.sort+'';
                 this.menuModify.remark = e.remark;
                 this.menuModify.icon = e.icon;
@@ -362,15 +361,15 @@
             getTable(e) {
                 this.axios({
                   method: 'get',
-                  url: '/menus',
+                  url: '/api/menuManger/getAllMenuForPage.do',
                   params: {
                     'page':e.pageInfo.page,
                     'pageSize':e.pageInfo.pageSize,
-                    'menuId':e.menuId
+                    'name':e.name
                   }
                 }).then(function (response) {
-                    this.data1=response.data.data;
-                    this.total=response.data.totalCount;
+                    this.data1=response.data.extend.menu;
+                    this.total=response.data.extend.totalCount;
                 }.bind(this)).catch(function (error) {
                   alert(error);
                 });
@@ -380,15 +379,15 @@
                 this.initPageInfo();
                 this.getTable({
                     "pageInfo":this.pageInfo,
-                    'menuId':this.menuId
+                    'name':this.name
                 });   
             },
             /*分页点击事件*/
             pageSearch(e){
-                this.pageInfo.page = e-1;
+                this.pageInfo.page = e;
                 this.getTable({  
                     "pageInfo":this.pageInfo,
-                    'menuId':this.menuId
+                    'name':this.name
                 });
             },
             /*新建点击触发事件*/
@@ -407,15 +406,20 @@
                         this.menuSet(this.menuNew);
                         this.axios({
                             method: 'post',
-                            url: '/menus/menu',
+                            url: '/api/menuManger/saveMenu.do',
                             data: this.menu
                         }).then(function (response) {
                             this.initMenuNew();
-                            this.getTable({
+                            if(response.data.resultCode == 200){
+                                this.getTable({
                                 "pageInfo":this.pageInfo,
-                                'menuId':this.menuId
-                            });
-                            this.$Message.info('新建成功');
+                                'name':this.name
+                                });
+                                this.$Message.info('添加成功');
+                            }else{
+                                this.$Message.error(response.data.resultMsg);
+                            }
+                            
                         }.bind(this)).catch(function (error) {
                             alert(error);
                         });  
@@ -446,22 +450,26 @@
                         this.initMenu();
                         this.menuSet(this.menuModify);
                         this.axios({
-                          method: 'put',
-                          url: '/menus/'+this.menu.id,
+                          method: 'post',
+                          url: '/api/menuManger/modifyMenu.do',
                           data: this.menu
                         }).then(function (response) {
                             this.initMenuNew();
-                            this.getTable({
+                            if(response.data.resultCode == 200){
+                                this.getTable({
                                 "pageInfo":this.pageInfo,
-                                'menuId':this.menuId
-                            });
-                            this.$Message.info('修改成功');
+                                'name':this.name
+                                });
+                                this.$Message.info('修改成功');
+                            }else{
+                                this.$Message.error(response.data.resultMsg);
+                            }
                         }.bind(this)).catch(function (error) {
                           alert(error);
                         });  
                         this.modifyModal = false;
+                        this.count=0;
                     }else {
-                        this.$Message.error('表单验证失败!');
                         setTimeout(() => {
                             this.loading = false;
                             this.$nextTick(() => {
@@ -473,7 +481,7 @@
             },
             /*modal的cancel点击事件*/
             cancel () {
-                this.$Message.info('点击了取消');
+                /*this.$Message.info('点击了取消');*/
             },
             /*table选择后触发事件*/
             change(e){
@@ -494,20 +502,27 @@
             del(){
                 if(this.groupId!=null && this.groupId!=""){
                     this.axios({
-                      method: 'delete',
-                      url: '/menus',
+                      method: 'post',
+                      url: '/api/menuManger/deleteMenu.do',
                       data: this.groupId
                     }).then(function (response) {
-                        this.getTable({
-                            "pageInfo":this.pageInfo,
-                            'menuId':this.menuId
-                        });
                         this.groupId=null;
                         this.count=0;
-                        this.$Message.info('删除成功');
+                        if(response.data.resultCode == 200){
+                            this.getTable({
+                                "pageInfo":this.pageInfo,
+                                "name":this.name
+                            });
+                            this.$Message.info('删除成功');
+                        }else{
+                            //iView.Message.error('添加失败');
+                            this.$Message.error(response.data.resultMsg);
+                        }
                     }.bind(this)).catch(function (error) {
                         alert(error);
                     });
+                }else{
+                    this.$Message.warning('请至少选择一项删除');
                 }
             },
             /*表格中双击事件*/

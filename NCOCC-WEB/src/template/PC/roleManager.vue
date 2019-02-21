@@ -35,8 +35,8 @@
                     </Col>
                 </Row>
                
-                <Form-item label="描述:" prop="describe">
-                     <Input v-model="roleNew.describe" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></Input>
+                <Form-item label="描述:" prop="describer">
+                     <Input v-model="roleNew.describer" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></Input>
                 </Form-item>
             </Form>
         </Modal>
@@ -46,7 +46,7 @@
                 <Row>
                     <Col span="12">
                         <Form-item label="角色:" prop="role">
-                            <Input v-model="roleModify.role" style="width: 204px"/>
+                            <Input v-model="roleModify.role" style="width: 204px" disabled="disabled"/>
                         </Form-item>
                     </Col>
                     <Col span="12">
@@ -58,13 +58,13 @@
                 <!-- <Form-item label="角色名:" prop="name">
                             <Input v-model="roleModify.name" style="width: 204px"/>
                         </Form-item> -->
-                <Form-item label="描述:" prop="describe">
-                     <Input v-model="roleModify.describe" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></Input>
+                <Form-item label="描述:" prop="describer">
+                     <Input v-model="roleModify.describer" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></Input>
                 </Form-item>
             </Form>
         </Modal>
         <!-- 配置权限 -->
-        <Modal v-model="settingModal"  width="400" title="配置权限" @on-ok="settingOk()" @on-cancel="cancel()" :mask-closable="false">
+        <Modal v-model="settingModal"  width="500" title="配置权限" @on-ok="settingOk()" @on-cancel="cancel()" :mask-closable="false">
             <Row>
                 <Col span="24"><Table border :columns="columns2" :data="data2"></Table></Col>
             </Row>
@@ -72,6 +72,7 @@
     </div>
 </template>
 <script>
+    import 'iview/dist/styles/iview.css';
     export default {
         data () {
             return {
@@ -91,7 +92,7 @@
                 loading: true,
                 /*pageInfo实体*/
                 pageInfo:{
-                    page:0,
+                    page:1,
                     pageSize:10
                 },
                 /*role实体*/
@@ -100,7 +101,7 @@
                     role:null,
                     name:null,
                     modules:null,
-                    describe:null
+                    describer:null
                 },
                 /*用于添加的role实体*/
                 roleNew:{
@@ -108,7 +109,7 @@
                     role:null,
                     name:null,
                     modules:null,
-                    describe:null
+                    describer:null
                 },
                 /*用于修改的role实体*/
                 roleModify:{
@@ -116,7 +117,7 @@
                     role:null,  
                     name:null,
                     modules:null,
-                    describe:null
+                    describer:null
                 },
                 /*新建验证*/
                 ruleNew:{
@@ -153,7 +154,7 @@
                     },
                     {
                         title: '描述',
-                        key: 'describe'
+                        key: 'describer'
                     },
                     {   title: '操作', 
                         key: 'action', 
@@ -162,14 +163,15 @@
                         render: (h, params) => { 
                             return h('div', [ h('Button', 
                                 { 
-                                    props: { icon:'gear-b' },
-                                    style: {border:'none',background:'none' }, 
+                                    props: {
+                                        type: 'info',
+                                    }, 
                                     on: { 
                                         click: () => { 
                                             this.setting(params.row);
                                         } 
                                     } 
-                                }, ) 
+                                }, '配置权限') 
                             ]); 
                         } 
                     }
@@ -225,9 +227,9 @@
             });
             this.axios({
               method: 'get',
-              url: '/menus/submenus'
+              url: '/api/menuManger/getAllSecMenu.do'
             }).then(function (response) {
-                this.submenusList = response.data;
+                this.submenusList = response.data.extend.secMenu;
             }.bind(this)).catch(function (error) {
               alert(error);
             });
@@ -235,7 +237,7 @@
         methods:{
             /*pageInfo实体初始化*/
             initPageInfo(){
-                this.pageInfo.page = 0;
+                this.pageInfo.page = 1;
                 this.pageInfo.pageSize = 10;
             },
             /*role实体初始化*/
@@ -244,7 +246,7 @@
                 this.role.role = null;
                 this.role.name = null;
                 this.role.modules = null;
-                this.role.describe = null;
+                this.role.describer = null;
             },
             /*roleNew实体初始化*/
             initRoleNew(){
@@ -252,7 +254,7 @@
                 this.roleNew.role = null;
                 this.roleNew.name = null;
                 this.roleNew.modules = null;
-                this.roleNew.describe = null;
+                this.roleNew.describer = null;
             },
             /*roleModify实体初始化*/
             initRoleModify(){
@@ -260,7 +262,7 @@
                 this.roleModify.role = null;
                 this.roleModify.name = null;
                 this.roleModify.modules = null;
-                this.roleModify.describe = null;
+                this.roleModify.describer = null;
             },
             /*roleNew设置*/
             roleSet(e){
@@ -268,7 +270,7 @@
                 this.role.role = e.role;
                 this.role.name = e.name;
                 this.role.modules = e.modules;
-                this.role.describe = e.describe;
+                this.role.describer = e.describer;
             },
             /*roleNew设置*/
             roleNewSet(e){
@@ -276,7 +278,7 @@
                 this.roleNew.role = e.role;
                 this.roleNew.name = e.name;
                 this.roleNew.modules = e.modules;
-                this.roleNew.describe = e.describe;
+                this.roleNew.describer = e.describer;
             },
             /*roleModify设置*/
             roleModifySet(e){
@@ -284,27 +286,27 @@
                 this.roleModify.role = e.role;
                 this.roleModify.name = e.name;
                 this.roleModify.modules = e.modules;
-                this.roleModify.describe = e.describe;
+                this.roleModify.describer = e.describer;
             },
             /*得到表数据*/
             getTable(e) {
                 this.axios({
                   method: 'get',
-                  url: '/roles',
+                  url: '/api/roleManger/getAllRolesForPage.do',
                   params: {
                     'page':e.pageInfo.page,
                     'pageSize':e.pageInfo.pageSize
                   }
                 }).then(function (response) {
-                    this.data1=response.data.data;
-                    this.total=response.data.totalCount;
+                    this.data1=response.data.extend.role;
+                    this.total=response.data.extend.totalCount;
                 }.bind(this)).catch(function (error) {
                   alert(error);
                 });
             },
             /*分页点击事件*/
             pageSearch(e){
-                this.pageInfo.page = e-1;
+                this.pageInfo.page = e;
                 this.getTable({  
                     "pageInfo":this.pageInfo
                 });
@@ -325,14 +327,18 @@
                         this.roleSet(this.roleNew);
                         this.axios({
                             method: 'post',
-                            url: '/roles/role',
+                            url: '/api/roleManger/saveRole.do',
                             data: this.role
                         }).then(function (response) {
                             this.initRoleNew();
-                            this.getTable({
+                            if(response.data.resultCode == 200){
+                                this.getTable({
                                 "pageInfo":this.pageInfo
-                            });
-                            this.$Message.info('新建成功');
+                                });
+                                this.$Message.info('添加成功');
+                            }else {
+                                this.$Message.error(response.data.resultMsg);
+                            }
                         }.bind(this)).catch(function (error) {
                             alert(error);
                         });  
@@ -363,21 +369,26 @@
                         this.initRole();
                         this.roleSet(this.roleModify);
                         this.axios({
-                          method: 'put',
-                          url: '/roles/'+this.role.id,
+                          method: 'post',
+                          url: '/api/roleManger/modifyRole.do',
                           data: this.role
                         }).then(function (response) {
                             this.initRoleModify();
-                            this.getTable({
+                            if(response.data.resultCode == 200){
+                                this.getTable({
                                 "pageInfo":this.pageInfo
-                            });
-                            this.$Message.info('修改成功');
+                                });
+                                this.$Message.info('修改成功');
+                            }else{
+                                this.$Message.error(response.data.resultMsg);
+                            }
+                            
                         }.bind(this)).catch(function (error) {
                           alert(error);
                         });  
                         this.modifyModal = false;
                     }else {
-                        this.$Message.error('表单验证失败!');
+                        /*this.$Message.error('表单验证失败!');*/
                         setTimeout(() => {
                             this.loading = false;
                             this.$nextTick(() => {
@@ -427,22 +438,27 @@
                 this.initRole();
                 this.roleSet(this.roleModify);
                 this.axios({
-                  method: 'put',
-                  url: '/roles/'+this.role.id,
+                  method: 'post',
+                  url: '/api/roleManger/menuConfigure.do',
                   data: this.role
                 }).then(function (response) {
                     this.initRoleModify();
-                    this.getTable({
+                    if(response.data.resultCode == 200){
+                        this.getTable({
                         "pageInfo":this.pageInfo
-                    });
-                    this.$Message.info('配置成功');
+                        });
+                        this.$Message.info('配置成功');
+                    }else{
+                        this.$Message.error(response.data.resultMsg);
+                    }
+                    
                 }.bind(this)).catch(function (error) {
                   alert(error);
                 });
             },
             /*modal的cancel点击事件*/
             cancel () {
-                this.$Message.info('点击了取消');
+                /*this.$Message.info('点击了取消');*/
             },
             /*table选择后触发事件*/
             change(e){
@@ -463,19 +479,26 @@
             del(){
                 if(this.groupId!=null && this.groupId!=""){
                     this.axios({
-                      method: 'delete',
-                      url: '/roles',
+                      method: 'post',
+                      url: '/api/roleManger/deleteRole.do',
                       data: this.groupId
                     }).then(function (response) {
-                        this.getTable({
-                            "pageInfo":this.pageInfo
-                        });
                         this.groupId=null;
                         this.count=0;
-                        this.$Message.info('删除成功');
+                        if(response.data.resultCode == 200){
+                            this.getTable({
+                            "pageInfo":this.pageInfo
+                            });
+                            this.$Message.info('删除成功');
+                        }else{
+                            //iView.Message.error('添加失败');
+                            this.$Message.error(response.data.resultMsg);
+                        }
                     }.bind(this)).catch(function (error) {
                         alert(error);
                     });
+                }else{
+                    this.$Message.warning('请至少选择一项删除');
                 }
             },
             /*表格中双击事件*/
