@@ -8,10 +8,11 @@
     <div class="logo">
       <a href="#">
         <div class="logo-img">
-          <img :src="imgLogo" alt="" style="width: 200px;height: 50px;margin-left:20px;"/>
+          <img :src="imgLogo" 
+          alt="" 
+          style="width:200px;height:50px;margin-left:20px;"/>
         </div>
       </a>
-
       <!--<a
         href="https://www.creative-tim.com/product/vue-material-dashboard"
         target="_blank"

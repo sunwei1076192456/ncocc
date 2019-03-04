@@ -2,6 +2,7 @@
 import ChartCard from "./Cards/ChartCard.vue";
 import NavTabsCard from "./Cards/NavTabsCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
+import WayBillCard from "./Cards/WayBillCard.vue";
 
 // Tables
 import NavTabsTable from "./Tables/NavTabsTable.vue";
@@ -12,6 +13,7 @@ export {
   ChartCard,
   NavTabsCard,
   StatsCard,
+  WayBillCard,
   NavTabsTable,
   OrderedTable,
   SimpleTable

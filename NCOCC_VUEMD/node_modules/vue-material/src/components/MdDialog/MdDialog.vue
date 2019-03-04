@@ -102,7 +102,6 @@
     margin: auto;
     display: flex;
     flex-flow: column;
-    flex-direction: row;
     overflow: hidden;
     position: fixed;
     top: 50%;

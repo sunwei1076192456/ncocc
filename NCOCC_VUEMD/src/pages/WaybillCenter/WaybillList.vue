@@ -13,7 +13,7 @@
         </md-card>
       </div>
       <div class="md-layout-item md-medium-size-100 md-size-33">
-        <user-card> </user-card>
+        <way-bill> </way-bill>
       </div>
     </div>
   </div>
@@ -21,10 +21,10 @@
 
 <script>
 import { SimpleTable } from "@/components";
-import { UserCard } from "@/pages";
+import { WayBillCard } from "@/components";
 export default {
   components: {
-    UserCard,
+    WayBillCard,
     SimpleTable
   }
 };
