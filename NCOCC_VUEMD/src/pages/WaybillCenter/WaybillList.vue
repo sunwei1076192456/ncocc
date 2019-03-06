@@ -13,7 +13,7 @@
         </md-card>
       </div>
       <div class="md-layout-item md-medium-size-100 md-size-33">
-        <way-bill> </way-bill>
+        <waybill-card> </waybill-card>
       </div>
     </div>
   </div>

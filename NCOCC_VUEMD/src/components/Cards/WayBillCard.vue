@@ -17,7 +17,7 @@
 </template>
 <script>
 export default {
-  name: "way-bill",
+  name: "waybill-card",
   props: {
     wayBillImage: {
       type: String,
