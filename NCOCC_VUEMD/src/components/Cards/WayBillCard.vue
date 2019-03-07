@@ -4,14 +4,36 @@
       <img class="img" :src="wayBillImage" />
     </div>
     <md-card-content>
-      <h6 class="category text-gray">CEO / Co-Founder</h6>
-      <h4 class="card-title">Alec Thompson</h4>
-      <p class="card-description">
-        Don't be scared of the truth because we need to restart the human
-        foundation in truth And I love you like Kanye loves Kanye I love Rick
-        Owens’ bed design but the back is...
-      </p>
-      <md-button class="md-round md-success">Follow</md-button>
+      <div class="md-layout">
+        <div class="md-layout-item md-size-100">
+          <div class="md-content md-table-content md-scrollbar md-theme-default">
+            <table>
+              <tbody>
+                <tr class="md-table-row">
+                  <td class="md-table-cell">箱号</td>
+                  <td class="md-table-cell">TEMU8662755</td>
+                </tr>
+                <tr class="md-table-row">
+                  <td class="md-table-cell">箱号</td>
+                  <td class="md-table-cell">TEMU8662755</td>
+                </tr>
+                <tr class="md-table-row">
+                  <td class="md-table-cell">箱号</td>
+                  <td class="md-table-cell">TEMU8662755</td>
+                </tr>
+                <tr class="md-table-row">
+                  <td class="md-table-cell">箱号</td>
+                  <td class="md-table-cell">TEMU8662755</td>
+                </tr>
+                <tr class="md-table-row">
+                  <td class="md-table-cell">箱号</td>
+                  <td class="md-table-cell">TEMU8662755</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </md-card-content>
   </md-card>
 </template>

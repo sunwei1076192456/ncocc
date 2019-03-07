@@ -20,6 +20,10 @@
         <md-icon>content_paste</md-icon>
         <p>Waybill List</p>
       </sidebar-link>
+      <sidebar-link to="/addwaybill">
+        <md-icon>content_paste</md-icon>
+        <p>Add Waybill</p>
+      </sidebar-link>
       <sidebar-link to="/typography">
         <md-icon>library_books</md-icon>
         <p>Typography</p>

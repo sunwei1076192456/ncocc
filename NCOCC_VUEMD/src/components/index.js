@@ -9,6 +9,9 @@ import NavTabsTable from "./Tables/NavTabsTable.vue";
 import OrderedTable from "./Tables/OrderedTable.vue";
 import SimpleTable from "./Tables/SimpleTable.vue";
 
+// Groups
+import BusinessCard from "./Groups/BusinessCard.vue";
+
 export {
   ChartCard,
   NavTabsCard,
@@ -16,5 +19,6 @@ export {
   WayBillCard,
   NavTabsTable,
   OrderedTable,
-  SimpleTable
+  SimpleTable,
+  BusinessCard
 };

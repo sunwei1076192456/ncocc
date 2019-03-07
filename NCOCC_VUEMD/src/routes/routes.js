@@ -9,6 +9,7 @@ import Maps from "@/pages/Maps.vue";
 import Notifications from "@/pages/Notifications.vue";
 import UpgradeToPRO from "@/pages/UpgradeToPRO.vue";
 import WaybillList from "@/pages/WaybillCenter/WaybillList.vue";
+import AddWaybill from "@/pages/WaybillCenter/AddWaybill.vue";
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
         path: "waybill",
         name: "Waybill Center",
         component: WaybillList
+      },
+      {
+        path: "addwaybill",
+        name: "Add Way bill",
+        component: AddWaybill
       },
       {
         path: "typography",
