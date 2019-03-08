@@ -1,11 +1,19 @@
 <template>
   <div>
-    <md-table v-model="users" :table-header-color="tableHeaderColor">
+    <md-table v-model="waybills" :table-header-color="tableHeaderColor">
       <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
-        <md-table-cell md-label="Country">{{ item.country }}</md-table-cell>
-        <md-table-cell md-label="City">{{ item.city }}</md-table-cell>
-        <md-table-cell md-label="Salary">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="状态">{{ item.WaybillID }}</md-table-cell>
+        <md-table-cell md-label="船期">{{ item.WaybillID }}</md-table-cell>
+        <md-table-cell md-label="船名/船次">{{ item.country }}</md-table-cell>
+        <md-table-cell md-label="类型">{{ item.city }}</md-table-cell>
+        <md-table-cell md-label="客户简称">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="船公司">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="运单号">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="箱型">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="箱号">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="门点">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="联系人">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="联系电话">{{ item.salary }}</md-table-cell>
       </md-table-row>
     </md-table>
   </div>
@@ -23,39 +31,39 @@ export default {
   data() {
     return {
       selected: [],
-      users: [
+      waybills: [
         {
-          name: "Dakota Rice",
+          WaybillID: "Dakota Rice",
           salary: "$36,738",
           country: "Niger",
           city: "Oud-Turnhout"
         },
         {
-          name: "Minerva Hooper",
+          WaybillID: "Minerva Hooper",
           salary: "$23,738",
           country: "Curaçao",
           city: "Sinaai-Waas"
         },
         {
-          name: "Sage Rodriguez",
+          WaybillID: "Sage Rodriguez",
           salary: "$56,142",
           country: "Netherlands",
           city: "Overland Park"
         },
         {
-          name: "Philip Chaney",
+          WaybillID: "Philip Chaney",
           salary: "$38,735",
           country: "Korea, South",
           city: "Gloucester"
         },
         {
-          name: "Doris Greene",
+          WaybillID: "Doris Greene",
           salary: "$63,542",
           country: "Malawi",
           city: "Feldkirchen in Kārnten"
         },
         {
-          name: "Mason Porter",
+          WaybillID: "Mason Porter",
           salary: "$78,615",
           country: "Chile",
           city: "Gloucester"
