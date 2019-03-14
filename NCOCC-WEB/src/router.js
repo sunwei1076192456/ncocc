@@ -6,10 +6,6 @@ import Util from './libs/util';
 Vue.use(VueRouter);
 
 const routers = [
-	{ 
-		path: '*', 
-		component: (resolve) => require(['./template/error404.vue'], resolve) 
-	},
 	{
 		path: '/',
 	    meta: {
@@ -75,11 +71,16 @@ const routers = [
 	    	}
 	    ]
 	},
+	/*{ 
+		path: '*', 
+		component: (resolve) => require(['./template/error404.vue'], resolve) 
+	},*/
 ];
 
 // 路由配置
 const RouterConfig = {
     mode: 'history',
+    base: '/ncocc',
     routes: routers
 };
 const router = new VueRouter(RouterConfig);
