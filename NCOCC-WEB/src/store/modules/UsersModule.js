@@ -26,7 +26,7 @@ export default {
         userLogin(context,{user_name,user_password,router}){
         	axios({
                 method: 'post',
-                url: '/api/userManger/login.do',
+                url: 'api/userManger/login.do',
                 data: {
                     "loginName": user_name,
                     "password": user_password
