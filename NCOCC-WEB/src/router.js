@@ -48,7 +48,7 @@ const routers = [
 	    	{
 	    		path: '/userManager',
                 name: 'userManager',
-                component: (resolve) => require(['./template/PC/userManager.vue'], resolve),
+                component: (resolve) => require(['./template/PC/UserCenter/userManager.vue'], resolve),
                 meta: {
                     title:"用户管理"
                 }
@@ -56,7 +56,7 @@ const routers = [
 	    	{
 	    		path: '/menuManager',
                 name: 'menuManager',
-                component: (resolve) => require(['./template/PC/menuManager.vue'], resolve),
+                component: (resolve) => require(['./template/PC/UserCenter/menuManager.vue'], resolve),
                 meta: {
                     title:"菜单管理"
                 }
@@ -64,11 +64,19 @@ const routers = [
 	    	{
 	    		path: '/roleManager',
                 name: 'roleManager',
-                component: (resolve) => require(['./template/PC/roleManager.vue'], resolve),
+                component: (resolve) => require(['./template/PC/UserCenter/roleManager.vue'], resolve),
                 meta: {
                     title:"角色管理"
                 }
-	    	}
+			},
+			{
+				path: '/waybillManager',
+                name: 'waybillManager',
+                component: (resolve) => require(['./template/PC/OrderCenter/waybillManager.vue'], resolve),
+                meta: {
+                    title:"运单管理"
+                }
+			}
 	    ]
 	},
 	/*{ 
