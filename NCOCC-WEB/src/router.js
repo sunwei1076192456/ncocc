@@ -74,13 +74,12 @@ const routers = [
                 }
 			},
 			{
-				path:'/waybillManager',
-				name: 'waybillManager',
-				component: (resolve) => require(['./template/PC/OrderCenter/waybillManager.vue'],resolve),
-				meta:{
-					title:"运单管理"
-				}
-
+				path: '/waybillManager',
+                name: 'waybillManager',
+                component: (resolve) => require(['./template/PC/OrderCenter/waybillManager.vue'], resolve),
+                meta: {
+                    title:"运单管理"
+                }
 			}
 	    ]
 	},
