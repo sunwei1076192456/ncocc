@@ -80,6 +80,14 @@ const routers = [
                 meta: {
                     title:"运单管理"
                 }
+			},
+			{
+				path: '/addWaybill',
+                name: 'addWaybill',
+                component: (resolve) => require(['./template/PC/OrderCenter/addWaybill.vue'], resolve),
+                meta: {
+                    title:"新增运单"
+                }
 			}
 	    ]
 	},
