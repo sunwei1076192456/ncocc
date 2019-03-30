@@ -3,18 +3,18 @@
         <div>
             <Row style="margin-bottom: 25px;">
                 <Col span="8">运单号：
-                	<Input v-model="loginName" placeholder="请输入..." style="width:200px"></Input>
+                	<Input v-model="orderId" placeholder="请输入..." style="width:200px"></Input>
                 </Col>
-                <Col span="6">船期：
-                    <Select v-model="userRole" filterable clearable style="width: 100px">
+                <!-- <Col span="6">船期：
+                    <Select v-model="sailingDate" filterable clearable style="width: 100px">
                         <Option v-for="item in allRoleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
                 </Col>
-                <Col span="6">船公司：
-                    <Select v-model="state" filterable clearable style="width: 100px">
+                <Col span="6">船名：
+                    <Select v-model="shipnameCode" filterable clearable style="width: 100px">
                         <Option v-for="item in stateList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
-                </Col>
+                </Col> -->
                 <Col span="4"><Button type="primary" shape="circle" icon="ios-search" @click="search()">搜索</Button></Col>
             </Row>
         </div>            
@@ -27,7 +27,9 @@
                 </li>
                 <li>
                     <div style="padding: 10px 0;">
-                    	<Table border :columns="waybillcol" :data="waybilldata" :height="400" @on-selection-change="s=>{change(s)}" @on-row-dblclick="s=>{dblclick(s)}"></Table>
+                        <Col class="panel table-panel" :span="24">
+                    	   <Table style="width: 100%;" :loading="pageInfo.loading" border :columns="waybillcol" :data="waybilldata" :height="400" @on-selection-change="s=>{change(s)}" @on-row-dblclick="s=>{dblclick(s)}"></Table>
+                        </Col>
                     </div> 
                 </li>
                 <li>
@@ -44,61 +46,143 @@
 	export default {
         data () {
             return {
+                /*当前用户登录名*/
+                loginName:null,
+                /*用于模糊查询的订单号*/
+                orderId:null,
+                /*sailingDate:null,
+                shipnameCode:null,*/
+                /*分页total属性绑定值*/
+                total:0,
+                /*loading*/
+                loading: true,
                 pageInfo:{
                 	page:1,
                 	pageSize:10
                 },
                 waybillcol:[
                     {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
                         title: '状态',
-                        key: 'status'
+                        width: 70,
+                        key: 'status',
+                        align: 'center'
                     },
                     {
                         title: '船期',
-                        key: 'schedule'
+                        width: 90,
+                        key: 'sailingdate',
+                        align: 'center'
                     },
                     {
-                        title: '船名/船次',
-                        key: 'shipname'
+                        title: '船名',
+                        width: 100,
+                        key: 'shipname_code',
+                        align: 'center'
+                    },
+                    {
+                        title: '船次',
+                        width: 70,
+                        key: 'voyage',
+                        align: 'center'
                     },
                     {
                         title: '类型',
-                        key: 'type'
+                        width: 70,
+                        key: 'businesstype_code',
+                        align: 'center'
                     },
                     {
                         title: '客户简称',
-                        key: 'customeralias'
+                        width: 100,
+                        key: 'cusabbreviation',
+                        align: 'center'
                     },
                     {
                         title: '船公司',
-                        key: 'shipcop'
+                        width: 90,
+                        key: 'shipabbreviation',
+                        align: 'center'
+                    },
+                    {
+                        title: '运单号',
+                        width: 180,
+                        key: 'id',
+                        align: 'center'
                     },
                     {
                         title: '箱型',
-                        key: 'boxtype'
+                        width: 70,
+                        key: 'containertype_code',
+                        align: 'center'
                     },
                     {
                         title: '箱号',
-                        key: 'boxnum'
+                        width: 120,
+                        key: 'containernumber',
+                        align: 'center'
                     },
                     {
                         title: '门点',
-                        key: 'addr'
+                        width: 70,
+                        key: 'deliveryplace_code',
+                        align: 'center'
                     },
                     {
                         title: '联系人',
-                        key: 'contact'
+                        width: 80,
+                        key: 'contact_id',
+                        align: 'center'
                     },
                     {
                         title: '联系电话',
-                        key: 'contactphone'
+                        width: 150,
+                        key: 'contact_id',
+                        align: 'center'
                     }
                 ],
-                waybilldata:[{}]
+                waybilldata:[]
             }
         },
-        mounted(){},
-        methods:{}
+        mounted(){
+            /*页面初始化调用方法*/
+            this.initLoginName();
+            this.getTable({
+                "pageInfo":this.pageInfo,
+                "loginName":this.loginName
+            });
+        },
+        methods:{
+            /*得到表数据*/
+            getTable(e) {
+                this.axios({
+                  method: 'get',
+                  url: '/api/BillService/queryBillByIng.do',
+                  params: {
+                    'page':e.pageInfo.page,
+                    'pageSize':e.pageInfo.pageSize,
+                    'loginName':e.loginName
+                  }
+                }).then((response) => {
+                    this.waybilldata=response.data.extend.bill;
+                    this.total=response.data.extend.totalCount;
+                }).catch((error) => {
+                  this.$Message.error(error);
+                });
+            },
+            initLoginName(){
+                this.loginName = window.localStorage.getItem("currentUser_name");
+            },
+            /*pageInfo实体初始化*/
+            initPageInfo(){
+                this.pageInfo.page = 1;
+                this.pageInfo.pageSize = 10;
+            },
+        }
     }
 </script>
 
