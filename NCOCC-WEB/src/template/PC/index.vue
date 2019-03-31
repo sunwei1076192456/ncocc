@@ -168,22 +168,24 @@
         mounted(){
             /*this.$router.push();*/
             /*this.userName = window.localStorage.getItem("currentUser_name");*/
-            this.axios({
+            /*this.axios({
                 method: 'get',
                 url: '/api/userManger/getUserByToken.do'
             }).then(function(response){
                 this.userName = response.data.extend.name;
             }.bind(this)).catch(function(error){
                 alert("Token校验失败，请重新登录!");
-            });
+            });*/
+            /*
             this.axios({
                 method: 'get',
                 url: '/api/menuManger/getMenuByLoginName.do',
                 params: {
                     "loginName": window.localStorage.getItem("currentUser_name")
                 }
-            }).then(function(response){
+            }).then(function(response){*/
                 /*console.log(response.data);*/
+                /*
                 this.menuList = response.data.extend.allMenu;
                 for(var i in this.menuList){
                     for(var j in this.menuList[i].children){
@@ -192,7 +194,7 @@
                 }
             }.bind(this)).catch(function(error){
                 alert("请求异常!");
-            });
+            });*/
         },
         methods:{
             menuSelect(e){

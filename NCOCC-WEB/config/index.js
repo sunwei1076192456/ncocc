@@ -46,13 +46,12 @@ module.exports = {
 
   build: {
     // Template for index.html
-    env: require('./prod.env'),
-    index: path.resolve(__dirname, '../ncocc/index.html'),
+    index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../ncocc'),
+    assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: './',
+    assetsPublicPath: '/',
 
     /**
      * Source Maps

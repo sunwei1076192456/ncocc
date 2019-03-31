@@ -6,6 +6,10 @@ import Util from './libs/util';
 Vue.use(VueRouter);
 
 const routers = [
+	{ 
+		path: '*', 
+		component: (resolve) => require(['./template/error404.vue'], resolve) 
+	},
 	{
 		path: '/',
 	    meta: {
@@ -76,19 +80,22 @@ const routers = [
                 meta: {
                     title:"运单管理"
                 }
+			},
+			{
+				path: '/addWaybill',
+                name: 'addWaybill',
+                component: (resolve) => require(['./template/PC/OrderCenter/addWaybill.vue'], resolve),
+                meta: {
+                    title:"新增运单"
+                }
 			}
 	    ]
 	},
-	/*{ 
-		path: '*', 
-		component: (resolve) => require(['./template/error404.vue'], resolve) 
-	},*/
 ];
 
 // 路由配置
 const RouterConfig = {
     mode: 'history',
-    base: '/ncocc',
     routes: routers
 };
 const router = new VueRouter(RouterConfig);

@@ -12,6 +12,9 @@ import SimpleTable from "./Tables/SimpleTable.vue";
 // Groups
 import BusinessCard from "./Groups/BusinessCard.vue";
 
+//SearchBar
+import WaybillSearchBar from "./SearchBar/WaybillSearchBar.vue";
+
 export {
   ChartCard,
   NavTabsCard,
@@ -20,5 +23,6 @@ export {
   NavTabsTable,
   OrderedTable,
   SimpleTable,
-  BusinessCard
+  BusinessCard,
+  WaybillSearchBar
 };
