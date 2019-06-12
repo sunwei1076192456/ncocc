@@ -29,6 +29,7 @@
                     <Button type="primary" icon="md-add" @click="openNewModal()">新建</Button>
                     <Button type="success" icon="md-build" @click="openModifyModal()">修改</Button>
                     <Button type="error" icon="md-trash" @click="del()">删除</Button>
+                    <Button type="warning" @click="del()">接单</Button>
                 </li>
                 <li>
                     <div style="padding: 10px 0;">
@@ -340,6 +341,8 @@
                 loginName:null,
                 /*用于模糊查询的订单号*/
                 waybill:null,
+                /*选中的组数据*/
+                groupId:null,
                 /*sailingDate:null,
                 shipnameCode:null,*/
                 /*分页total属性绑定值*/
@@ -905,8 +908,20 @@
             cancel() {
                 /*this.$Message.info('点击了取消');*/
             },
+             /*table选择后触发事件*/
             change(e){
-                this.FormItem.data=e;
+                /*if(e.length==1){
+                    this.userModifySet(e['0']);
+                }*/
+                this.setGroupId(e);              
+            },
+            /*通过选中的行设置groupId的值*/
+            setGroupId(e){
+                this.groupId=[];
+                this.count=e.length;
+                for (var i = 0; i <= e.length - 1; i++) {
+                    this.groupId.push(e[i].id);
+                }
             },
         }
     }
