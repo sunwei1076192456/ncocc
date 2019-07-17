@@ -81,14 +81,30 @@ const routers = [
                     title:"运单管理"
                 }
 			},
-			{
+			/*{
 				path: '/addWaybill',
                 name: 'addWaybill',
                 component: (resolve) => require(['./template/PC/OrderCenter/addWaybill.vue'], resolve),
                 meta: {
                     title:"新增运单"
                 }
-			}
+			}*/
+			{
+				path: '/dispatcherAudit',
+                name: 'dispatcherAudit',
+                component: (resolve) => require(['./template/PC/OrderCenter/dispatcherAudit.vue'], resolve),
+                meta: {
+                    title:"调度审核"
+                }
+			},
+            {
+                path: '/dispatcherAssignCar',
+                name: 'dispatcherAssignCar',
+                component: (resolve) => require(['./template/PC/OrderCenter/dispatcherAssignCar.vue'], resolve),
+                meta: {
+                    title:"调度派车"
+                }
+            }
 	    ]
 	},
 ];
@@ -96,6 +112,7 @@ const routers = [
 // 路由配置
 const RouterConfig = {
     mode: 'history',
+    base: '/ncocc',
     routes: routers
 };
 const router = new VueRouter(RouterConfig);

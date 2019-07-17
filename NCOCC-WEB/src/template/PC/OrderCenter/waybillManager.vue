@@ -2,6 +2,9 @@
     .newBillModal .ivu-form-item-content{
         margin-left: 0px !important;
     }
+    ul li{
+      list-style-type:none;
+    }
 </style>
 <template>
 	<div style="margin: 20px;">
@@ -28,8 +31,14 @@
                 <li>
                     <Button type="primary" icon="md-add" @click="openNewModal()">新建</Button>
                     <Button type="success" icon="md-build" @click="openModifyModal()">修改</Button>
-                    <Button type="error" icon="md-trash" @click="del()">删除</Button>
-                    <Button type="warning" @click="del()">接单</Button>
+                    <Button type="error" icon="md-trash" @click="del()">作废</Button>
+                    <Poptip
+                        confirm
+                        title="是否确认接受此订单!"
+                        @on-ok="confirmAcceptOrder()"
+                        @on-cancel="cancel()">
+                        <Button type="warning">确认接单</Button>
+                    </Poptip>
                 </li>
                 <li>
                     <div style="padding: 10px 0;">
@@ -921,6 +930,32 @@
                 this.count=e.length;
                 for (var i = 0; i <= e.length - 1; i++) {
                     this.groupId.push(e[i].id);
+                }
+            },
+            confirmAcceptOrder(){
+                if(this.groupId!=null && this.groupId!=""){
+                    this.axios({
+                      method: 'post',
+                      url: '/api/BillService/confirmAcceptOrder.do',
+                      data: this.groupId
+                    }).then(function (response) {
+                        this.groupId=null;
+                        this.count=0;
+                        if(response.data.resultCode == 200){
+                            this.getTable({
+                            "pageInfo":this.pageInfo,
+                            "loginName":this.loginName
+                            });
+                            this.$Message.info('接单成功');
+                        }else{
+                            //iView.Message.error('添加失败');
+                            this.$Message.error(response.data.resultMsg);
+                        }
+                    }.bind(this)).catch(function (error) {
+                        this.$Message.error('接单失败');
+                    });
+                }else{
+                    this.$Message.warning('请至少选择一项');
                 }
             },
         }
