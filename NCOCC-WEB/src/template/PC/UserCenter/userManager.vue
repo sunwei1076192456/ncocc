@@ -288,8 +288,11 @@
                                 return h('div', [
                                     h('strong', null,'操作员')
                                 ]); 
-                           }
-                           else{
+                           }else if(params.row.usertype == 4){
+                                return h('div', [
+                                    h('strong', null,'车管员')
+                                ]);
+                           }else{
                                 return h('div', [
                                     h('strong', null,'无')
                                 ]); 

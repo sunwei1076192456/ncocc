@@ -535,6 +535,15 @@
                 /*this.$Message.info('点击了取消');*/
                 this.loading=false;
             },
+            /*分页点击事件*/
+            pageSearch(e){
+                this.pageInfo.page = e;
+                this.getTable({  
+                    "pageInfo":this.pageInfo,
+                    "loginName":this.loginName,
+                    "tacheId":"1001"
+                });
+            },
              /*table选择后触发事件*/
             change(e){
                 if(e.length==1){

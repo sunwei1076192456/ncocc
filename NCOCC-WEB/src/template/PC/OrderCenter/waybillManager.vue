@@ -339,6 +339,15 @@
                  </Row>          
             </Form>
         </Modal>
+        <!--查看驳回原因modal-->  
+        <Modal v-model="rejectReasonModal" width="500" title="驳回原因">
+            <div>
+                <Table border :columns="rejectdataCol" :data="rejectdata" :height="260"></Table>
+            </div>
+            <div slot="footer">
+            <Button type="info" size="large" long @click="cancel()">关闭</Button>
+        </div>
+        </Modal>
     </div>
 </template>
 <script>
@@ -360,10 +369,29 @@
                 loading: true,
                 /*新建modal的显示参数*/
                 newModal:false,
+                /*驳回原因modal的显示参数*/
+                rejectReasonModal:false,
                 pageInfo:{
                 	page:1,
                 	pageSize:10
                 },
+                rejectdataCol:[
+                    {
+                      title: '驳回原因',
+                      width: 200,
+                      key: 'rejectReason'
+                    },
+                    {
+                      title: '驳回时间',
+                      width: 150,
+                      key: 'rejectTime'
+                    },
+                    {
+                      title: '驳回人',
+                      width: 115,
+                      key: 'rejectPerson'
+                    }
+                ],
                 waybillcol:[
                     {
                         type: 'selection',
@@ -477,7 +505,43 @@
                         width: 120,
                         key: 'iphone',
                         align: 'center'
-                    }
+                    },
+                    {
+                        title: '操作',
+                        width: 180,
+                        align: 'center',
+                        key: 'action',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'info',
+                                    },
+                                    style:{
+                                      marginLeft: '0px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.relationSet(params.row);
+                                        }
+                                    }
+                                },'打印'),
+                                h('Button', {
+                                    props: {
+                                        type: 'warning',
+                                    },
+                                    style: {
+                                        display:(params.row.isDisReject=='Y')?"inline-block":"none",
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.lookRejectReason(params.row);
+                                        }
+                                    }
+                                },'驳回原因')
+                            ]);
+                        }
+                    },
                 ],
                 wayBill:{
                     create_by:null,
@@ -625,6 +689,7 @@
                     ]
                 },
                 waybilldata:[],
+                rejectdata:[],
                 //所有客户
                 custList:[],
                 /*初始所有业务类型*/
@@ -655,7 +720,8 @@
             this.getTable({
                 "pageInfo":this.pageInfo,
                 "loginName":this.loginName,
-                "waybill":this.waybill
+                "waybill":this.waybill,
+                "tacheId":"1000"
             });
             this.axios({
               method: 'get',
@@ -686,10 +752,12 @@
                     'page':e.pageInfo.page,
                     'pageSize':e.pageInfo.pageSize,
                     'loginName':e.loginName,
-                    'waybill':e.waybill
+                    'waybill':e.waybill,
+                    "tacheId":"1000"
                   }
                 }).then((response) => {
                     this.waybilldata=response.data.extend.bill;
+                    //console.log(waybilldata);
                     this.total=response.data.extend.totalCount;
                 }).catch((error) => {
                   this.$Message.error(error);
@@ -701,7 +769,8 @@
                 this.getTable({
                     "pageInfo":this.pageInfo,
                     "loginName":this.loginName,
-                    "waybill":this.waybill
+                    "waybill":this.waybill,
+                    "tacheId":"1000"
                 });   
             },
             initLoginName(){
@@ -916,6 +985,15 @@
             },
             cancel() {
                 /*this.$Message.info('点击了取消');*/
+                this.rejectReasonModal=false;
+            },
+            /*分页点击事件*/
+            pageSearch(e){
+                this.pageInfo.page = e;
+                this.getTable({  
+                    "pageInfo":this.pageInfo,
+                    "loginName":this.loginName
+                });
             },
              /*table选择后触发事件*/
             change(e){
@@ -958,6 +1036,48 @@
                     this.$Message.warning('请至少选择一项');
                 }
             },
+
+            lookRejectReason(e){
+               this.axios({
+                  method: 'get',
+                  url: '/api/BillService/queryBillRejectReason.do',
+                  params: {
+                    'orderId':e.id,
+                    'tacheCode':e.disRejectTache
+                  }
+                }).then((response) => {
+                    this.rejectdata=response.data.extend.rejectReasonList;
+                    this.rejectReasonModal = true;
+                }).catch((error) => {
+                  this.$Message.error(error);
+                });
+
+            },
+            del(){
+                if(this.groupId!=null && this.groupId!=""){
+                    this.axios({
+                      method: 'post',
+                      url: '/api/BillService/deleteOrder.do',
+                      data: this.groupId
+                    }).then(function (response) {
+                        this.groupId=null;
+                        this.count=0;
+                        if(response.data.resultCode == 200){
+                            this.getTable({
+                            "pageInfo":this.pageInfo,
+                            "loginName":this.loginName
+                            });
+                            this.$Message.info('作废成功');
+                        }else{
+                            this.$Message.error(response.data.resultMsg);
+                        }
+                    }.bind(this)).catch(function (error) {
+                        this.$Message.error('作废失败');
+                    });
+                }else{
+                    this.$Message.warning('请至少选择一项作废');
+                }
+            }
         }
     }
 </script>
