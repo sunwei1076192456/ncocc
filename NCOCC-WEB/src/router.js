@@ -74,13 +74,29 @@ const routers = [
                 }
 			},
 			{
-				path: '/waybillManager',
-                name: 'waybillManager',
-                component: (resolve) => require(['./template/PC/OrderCenter/waybillManager.vue'], resolve),
+				path: '/unpackWaybillManager',
+                name: 'unpackWaybillManager',
+                component: (resolve) => require(['./template/PC/OrderCenter/unpackWaybillManager.vue'], resolve),
                 meta: {
-                    title:"运单管理"
+                    title:"拆箱运单"
                 }
 			},
+            {
+                path: '/packWaybillManager',
+                name: 'packWaybillManager',
+                component: (resolve) => require(['./template/PC/OrderCenter/packWaybillManager.vue'], resolve),
+                meta: {
+                    title:"拆箱运单"
+                }
+            },
+            {
+                path: '/todoWaybillManager',
+                name: 'todoWaybillManager',
+                component: (resolve) => require(['./template/PC/OrderCenter/todoWaybillManager.vue'], resolve),
+                meta: {
+                    title:"拆箱运单"
+                }
+            },
 			/*{
 				path: '/addWaybill',
                 name: 'addWaybill',
