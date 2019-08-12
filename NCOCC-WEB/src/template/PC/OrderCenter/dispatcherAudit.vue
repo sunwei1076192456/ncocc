@@ -67,6 +67,7 @@
                           <Col span="12">业务种类:
                             <input v-if="wayBill.businesstype_code == 1" :value="'拆箱'" type="text" style="width:150px" readonly=true>
                             <input v-if="wayBill.businesstype_code == 2" :value="'装箱'" type="text" style="width:150px" readonly=true>
+                            <input v-if="wayBill.businesstype_code == 27" :value="'代办'" type="text" style="width:150px" readonly=true>
                           </Col>
                         <Col span="12">接单人:
                           <input v-model="wayBill.create_by" type="text" style="width:150px" readonly=true/>
@@ -92,19 +93,11 @@
                         </Col>
                       </Row>
                       <Row style="margin-bottom: 25px;">
-                          <Col span="12">提箱时间:
-                            <input v-model="wayBill.draw_container_time" type="text" style="width:150px" readonly=true/>
+                          <Col span="12">预约送货时间:
+                            <input v-model="wayBill.start_time" type="text" style="width:150px" readonly=true/>
                           </Col>
-                        <Col span="12">返箱时间:
-                          <input v-model="wayBill.return_container_time" type="text" style="width:150px" readonly=true/>
-                        </Col>
-                      </Row>
-                      <Row style="margin-bottom: 25px;">
-                          <Col span="12">落港时间:
-                            <input v-model="wayBill.port_container_time" type="text" style="width:150px" readonly=true/>
-                          </Col>
-                        <Col span="12">装船时间:
-                          <input v-model="wayBill.ship_container_time" type="text" style="width:150px" readonly=true/>
+                        <Col span="12">预约装货时间:
+                          <input v-model="wayBill.end_time" type="text" style="width:150px" readonly=true/>
                         </Col>
                       </Row>
                       <Row style="margin-bottom: 25px;">
