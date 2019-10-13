@@ -8,6 +8,13 @@
     input{
       border: none;
     }
+    .input{
+        border: 1px solid #228B22;
+        /*text-align: left;*/
+        padding-left: 5px;
+        font-size: 14px;
+        color:  #888888;
+    }
     .matchQueryDivStyleAvailable{
         display: block;
     }
@@ -54,21 +61,26 @@
         </li>
       </ul>
     </div>
-    <!--调度派车页面-->
-    <!-- <Transfer
-            v-model="assignModal"
-            :titles="titles"
-            :data="toChosenOrderList"
-            :target-keys="targetKeys"
-            :list-style="listStyle"
-            :render-format="render3"
-            :operations="['移除','添加']"
-            filterable
-            @on-change="handleChange3">
-            <div :style="{float: 'right', margin: '5px'}">
-                <Button size="small" @click="reloadMockData">Refresh</Button>
-            </div>
-        </Transfer> -->
+    <!--选择车队页面-->
+    <Modal :mask-closable="false" :visible.sync="selectTransport" :loading="loading" v-model="selectTransport" width="650" title="选择车队" @on-ok="confirmSelectTransport()" @on-cancel="cancel()">
+    <Transfer
+        v-model="selectTransport"
+        :titles="['可选择','已选择']"
+        :data="transportInfoList"
+        :target-keys="targetKeys"
+        :list-style="listStyle"
+        :render-format="renderFormat"
+        :operations="['移除','添加']"
+        filterable
+        @on-change="handleChange">
+        <div :style="{float: 'right', margin: '5px'}">
+            <Button size="small" @click="reloadMockData">刷新</Button>
+        </div>
+    </Transfer>
+    <!-- <div slot="footer">
+        <Button type="error" size="large" long @click="cancel()">关闭</Button>
+    </div> -->
+</Modal>
     <Modal :mask-closable="false" :visible.sync="assignModal" :loading="loading" v-model="assignModal" width="800" title="调度派车" @on-ok="assign()" @on-cancel="cancel()">
       <Collapse>
         <Panel name="orderInfo">
@@ -151,10 +163,30 @@
           </div>
         </Panel>
         <Panel>
-            车队信息
-            <div slot="content">
-                
-            </div>
+          车队信息
+          <div slot="content">
+            <Row>
+              <Col span="4">
+                  <Input search v-model="waybill" placeholder="请选择车队" style="width:100px" @on-search="selectTransportInfo()"></Input>
+              </Col>
+              <Col span="4">
+                  <Button type="warning" @click="clearTransport()">清除车队信息</Button>
+              </Col>
+            </Row>
+            <Row><br/></Row>
+            <Row>
+              <Col span="8">车队：
+              <input v-model="selectedTransportInfo.name" type="text" class="input" style="width:150px;height:30px" readonly=true/>
+              <input v-model="selectedTransportInfo.id" type="text" class="input" style="width:150px;height:30px" hidden="true" />
+              </Col>
+              <Col span="8">车队联系人：
+              <input v-model="selectedTransportInfo.contactName" type="text" class="input" style="width:150px;height:30px" readonly=true />
+              </Col>
+              <Col span="8">车队联系电话：
+              <input v-model="selectedTransportInfo.contactPhone" type="text" class="input" style="width:150px;height:30px" readonly=true />
+              </Col>
+            </Row>
+          </div>
         </Panel>
       </Collapse>
     </Modal>
@@ -182,8 +214,9 @@ export default {
       total: 0,
       /*loading*/
       loading: true,
-      /*调度审核modal的显示参数*/
+      /*调度派车modal的显示参数*/
       assignModal: false,
+      selectTransport: false,
       pageInfo: {
         page: 1,
         pageSize: 10
@@ -465,7 +498,20 @@ export default {
       tradeTypeList: [],
       //可供选择的工单列表--用于组成融合单
       toChosenOrderList: [],
-      isMatch: null
+      //车队信息
+      transportInfoList: [],
+      isMatch: null,
+      targetKeys:null,
+      listStyle: {
+        width: '250px',
+        height: '300px'
+      },
+      selectedTransportInfo:{
+        id: null,
+        name: null,
+        contactName: null,
+        contactPhone: null
+      }
     }
   },
   mounted() {
@@ -492,6 +538,7 @@ export default {
       this.addrInfoList = response.data.extend.addrInfo;
       this.shipNameList = response.data.extend.shipName;
       this.tradeTypeList = response.data.extend.tradeType;
+      this.transportInfoList = response.data.extend.transportInfo;
     }).catch((error) => {
       this.$Message.error(error);
     });
@@ -641,6 +688,7 @@ export default {
     cancel() {
       /*this.$Message.info('点击了取消');*/
       this.loading = false;
+      this.selectTransport = false;
     },
     /*table选择后触发事件*/
     change(e) {
@@ -665,7 +713,6 @@ export default {
     /*通过选中的行设置groupId的值*/
     setMatchGroupId(e) {
       this.matchGroupId = this.groupId;
-      this.count = e.length;
       for (var i = 0; i <= e.length - 1; i++) {
         this.matchGroupId.push(e[i].id);
       }
@@ -680,8 +727,8 @@ export default {
         this.initMatchGroupId();
       }
     },
-    initMatchGroupId(){
-        this.matchGroupId = this.groupId;
+    initMatchGroupId() {
+      this.matchGroupId = this.groupId;
     },
     queryMatchBill() {
       this.initToChosenOrderList();
@@ -710,14 +757,15 @@ export default {
       });
     },
     getTargetKeys() {
-      return this.initToChosenOrderList()
+      return this.transportInfoList
         .filter(() => Math.random() * 2 > 1)
         .map(item => item.key);
     },
     reloadMockData() {
-      this.toChosenOrderList = this.initToChosenOrderList();
+      // this.transportInfoList = this.transportInfoList;
       this.targetKeys = this.getTargetKeys();
     },
+
     confirmMatchOrder() {
       if (this.matchGroupId != null && this.matchGroupId != "") {
         this.axios({
@@ -761,8 +809,44 @@ export default {
       } else {
         this.$Message.warning('请至少选择一项');
       }
-    }
-
+    },
+    selectTransportInfo(){
+        this.selectTransport=true;
+    },
+    clearTransport(){
+        this.initSelectedTransportInfo();
+    },
+    handleChange(newTargetKeys){
+        this.targetKeys = newTargetKeys;
+    },
+    renderFormat(item){
+        return item.label + "-" + item.description;
+    },
+    confirmSelectTransport(){
+        if(this.targetKeys != null && this.targetKeys[0] != null){
+        var selectedTrans = this.transportInfoList.filter(item => item.key == this.targetKeys[0]);
+        this.initSelectedTransportInfo();
+        this.selectedTransportInfo.id=selectedTrans[0].key;
+        this.selectedTransportInfo.name=selectedTrans[0].label;
+        this.selectedTransportInfo.contactName=selectedTrans[0].contact_name;
+        this.selectedTransportInfo.contactPhone=selectedTrans[0].contact_phone;
+        this.selectTransport=false;
+        }else{
+            this.$Message.warning('请选择一个车队');
+            setTimeout(() => {
+                this.loading = false;
+                this.$nextTick(() => {
+                    this.loading = true;
+                });
+            }, 1000);
+        }
+    },
+    initSelectedTransportInfo(){
+        this.selectedTransportInfo.id = null;
+        this.selectedTransportInfo.name = null;
+        this.selectedTransportInfo.contactName = null;
+        this.selectedTransportInfo.contactPhone = null;
+    },
   }
 }
 
