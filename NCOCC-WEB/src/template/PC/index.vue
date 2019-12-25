@@ -183,7 +183,7 @@
                     "loginName": window.localStorage.getItem("currentUser_name")
                 }
             }).then(function(response){
-                /*console.log(response.data);*/
+                /*console.log(response.data.extend.allMenu);*/
                 this.menuList = response.data.extend.allMenu;
                 for(var i in this.menuList){
                     for(var j in this.menuList[i].children){

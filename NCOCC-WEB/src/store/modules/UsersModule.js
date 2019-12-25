@@ -13,10 +13,11 @@ export default {
         }
     },
     mutations:{
-        setUser(state,{user_name,user_token}){
+        setUser(state,{user_name,user_token,user_role}){
             // 在这里把用户名和token保存起来
             localStorage.setItem("currentUser_name",user_name);
             localStorage.setItem("currentUser_token",user_token);
+            localStorage.setItem("currentUser_role",user_role);
         },
         clearUser(state){
             localStorage.clear();
@@ -34,7 +35,7 @@ export default {
             }).then(function(response){
                 /*console.log(response.data);*/
                 if(response.data.resultCode == 200){
-                    context.commit('setUser',{"user_name":user_name,"user_token":response.data.extend.access_token});
+                    context.commit('setUser',{"user_name":user_name,"user_token":response.data.extend.access_token,"user_role":response.data.extend.role});
                     /*router.push({path:"base"});*/
                     axios.defaults.headers.common['Authorization'] = 'bearer '+ localStorage.getItem("currentUser_token");
                     /*context.commit('setLoginErrorCode',200,{root: true});*/
