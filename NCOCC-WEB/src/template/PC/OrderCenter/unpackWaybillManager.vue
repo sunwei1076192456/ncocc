@@ -30,7 +30,7 @@
       <ul>
         <li>
           <Button type="primary" icon="md-add" @click="openNewModal()">新建</Button>
-          <Button type="success" icon="md-build" @click="openModifyModal()">修改</Button>
+          <!-- <Button type="success" icon="md-build" @click="openModifyModal()">修改</Button> -->
           <Button type="error" icon="md-trash" @click="del()">作废</Button>
           <Poptip confirm title="是否确认接受此订单!" @on-ok="confirmAcceptOrder()" @on-cancel="cancel()">
             <Button type="warning">确认接单</Button>
@@ -39,7 +39,7 @@
         <li>
           <div style="padding: 10px 0;">
             <Col class="panel table-panel" :span="24">
-            <Table style="width: 100%;" :loading="pageInfo.loading" border :columns="waybillcol" :data="waybilldata" :height="400" @on-selection-change="s=>{change(s)}" @on-row-dblclick="s=>{dblclick(s)}"></Table>
+            <Table style="width: 100%;" :loading="pageInfo.loading" border :columns="waybillcol" :data="waybilldata" :height="400" @on-selection-change="s=>{change(s)}"></Table>
             </Col>
           </div>
         </li>
@@ -1073,5 +1073,4 @@ export default {
     }
   }
 }
-
 </script>

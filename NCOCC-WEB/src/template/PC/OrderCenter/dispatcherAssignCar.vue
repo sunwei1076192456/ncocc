@@ -63,15 +63,7 @@
     </div>
     <!--选择车队页面-->
     <Modal :mask-closable="false" :visible.sync="selectTransport" :loading="loading" v-model="selectTransport" width="650" title="选择车队" @on-ok="confirmSelectTransport()" @on-cancel="cancel()">
-      <Transfer 
-        v-model="selectTransport" 
-        :titles="['可选择','已选择']" 
-        :data="transportInfoList" 
-        :target-keys="targetKeys" 
-        :list-style="listStyle" 
-        :render-format="renderFormat" 
-        :operations="['移除','添加']" filterable 
-        @on-change="handleChange">
+      <Transfer v-model="selectTransport" :titles="['可选择','已选择']" :data="transportInfoList" :target-keys="targetKeys" :list-style="listStyle" :render-format="renderFormat" :operations="['移除','添加']" filterable @on-change="handleChange">
         <div :style="{float: 'right', margin: '5px'}">
           <Button size="small" @click="reloadMockData">刷新</Button>
         </div>

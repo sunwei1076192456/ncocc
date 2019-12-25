@@ -120,6 +120,22 @@ const routers = [
                 meta: {
                     title:"调度派车"
                 }
+            },
+            {
+                path: '/carManagerAudit',
+                name: 'carManagerAudit',
+                component: (resolve) => require(['./template/PC/OrderCenter/carManagerAudit.vue'], resolve),
+                meta: {
+                    title:"车管审核"
+                }
+            },
+            {
+                path: '/searchManager',
+                name: 'searchManager',
+                component: (resolve) => require(['./template/PC/OrderCenter/searchManager.vue'], resolve),
+                meta: {
+                    title:"综合查询"
+                }
             }
 	    ]
 	},
